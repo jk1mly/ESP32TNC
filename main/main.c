@@ -49,6 +49,10 @@
 #include "BME280.h"   /* for BME280 APRS transmit test */
 #endif
 
+#ifdef M5StampQRP
+#include "bk4802p.h"
+#endif
+
 #define TAG "main"
 
 #ifdef BEACON
@@ -162,6 +166,9 @@ void app_main(void)
 #ifdef M5ATOM
         "M5TNC M5Atom version"
 #endif
+#ifdef M5StampQRP
+        "FX.25 KISS QRP TRCV(Software modem, BK4802)"
+#endif
     );
 
     ESP_LOGI(TAG, "TNC_PORTS = %d", TNC_PORTS);
@@ -194,6 +201,9 @@ void app_main(void)
     // initialize UART
     uart_init();
 
+#ifdef M5StampQRP
+//    trx_init();
+#endif
 
 #ifdef ENABLE_SOFTMODEM
     ESP_LOGI(TAG, "enable softmodem");

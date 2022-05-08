@@ -26,6 +26,10 @@
 #include "m5atom.h"
 #endif
 
+#ifdef M5StampQRP
+#include "bk4802p.h"
+#endif
+
 static const char TAG[] = "send";
 
 #define BUSY_PORT 2
@@ -228,6 +232,10 @@ static void send_task(void *arg)
 		if (!tp->ptt) { // if ptt is off
 
 	    	ESP_LOGD(TAG, "PTT is off, port = %d", tp->port);
+
+#ifdef M5StampQRP
+//			trx_send();
+#endif
 
 	    	while (!tp->fullDuplex) { // if half duplex
 
