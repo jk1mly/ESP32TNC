@@ -22,6 +22,9 @@ config FX25TNCR3
 config FX25TNCR4
     bool "FX.25 KISS TNC rev.4 (Software modem and TCM3105 version)"
     
+config M5StampQRP
+    bool "FX.25 KISS QRP TRCV(Software modem, BK4802)"
+
 endchoice
 
 config M5STICKC_AUDIO

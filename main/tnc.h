@@ -40,6 +40,8 @@
 #define TNC_PORTS M5ATOM_PORTS	// 1..2
 #elif defined(M5STICKC)
 #define TNC_PORTS 1
+#elif defined(M5StampQRP)
+#define TNC_PORTS 1
 #else
 #define TNC_PORTS 6 // number of ports 1..6
 #endif
