@@ -257,8 +257,8 @@ static const uint8_t CDT_LED_PIN[] = {
 	-1, -1, // using internal RGB LED with RMT SoC
 #elif defined(M5STICKC)
 	-1, // using internal Red LED with PWM LED SoC
-#elif defined(M5StampQRP)
-	18,2,
+#elif defined(BK4802)
+	-1, -1,
 #else
 	2, 2, 2, 2, 2, 2, // assume LED connected to GPIO2
 #endif
@@ -281,8 +281,6 @@ static const uint8_t CDT_LED_ON[] = {
 	1, 1,
 #elif defined(M5STICKC) || defined(M5ATOM)
 	0, 0,	// not used this value
-#elif defined(M5StampQRP)
-	1, 1,
 #else
 	1,
 	1,
@@ -311,8 +309,6 @@ static const int8_t PTT_PIN[] = {
 #else
 	0, // GPIO0
 #endif
-#elif defined(M5StampQRP)
-	19,0,
 #else
 	23,
 	22,
@@ -379,8 +375,8 @@ const uint8_t TNC_ADC_CH[] = {
 	5, 6,	// GPIO 33, 34
 #elif defined(M5STICKC)
 	0,		// GPIO 36
-#elif defined(M5StampQRP)
-	0,		// GPIO 36  ADC1_CH0
+#elif defined(BK4802)
+	CONFIG_BK4802_AUDIOIN,
 #else
 	0, 3, 6, 7, 4, 5, // GPIO 36, 39, 34, 35, 32, 33,
 #endif

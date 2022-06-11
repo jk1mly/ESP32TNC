@@ -39,11 +39,6 @@
 #define ENABLE_SOFTMODEM 1
 #endif
 
-#ifdef CONFIG_M5StampQRP
-#define M5StampQRP 1
-#define ENABLE_SOFTMODEM 1
-#endif
-
 #ifdef CONFIG_ENABLE_TCM3105
 #define ENABLE_TCM3105 1
 #define TCM3105_PORT 1
@@ -146,11 +141,6 @@
 #define GPIO_ENABLE_TCM3105_PIN 5
 #endif
 
-#ifdef M5StampQRP
-#define GPIO_PTT_PIN 19
-#define GPIO_LED_PIN 18
-#endif
-
 #ifdef CONFIG_GPIO_TXD_PIN
 #define GPIO_TXD_PIN CONFIG_GPIO_TXD_PIN
 #endif
@@ -197,4 +187,9 @@
 
 #ifdef CONFIG_FX25_STAT_CALLSIGN
 #define FX25_STAT_CALLSIGN CONFIG_FX25_STAT_CALLSIGN
+#endif
+
+#ifdef CONFIG_BK4802
+#define BK4802 1
+#define ENABLE_SOFTMODEM 1
 #endif

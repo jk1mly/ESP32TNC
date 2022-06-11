@@ -21,8 +21,8 @@
 #include "m5atom.h"
 #endif
 
-#ifdef M5StampQRP
-#include "bk4802p.h"
+#ifdef BK4802
+#include "bk4802.h"
 #endif
 
 #define FACTOR 1	// sampling rate, 1: 13200Hz, 2: 26400Hz
@@ -54,19 +54,19 @@ static const uint8_t sigmadelta_gpio_pins[] = {
 #elif defined(M5ATOM)
     22, 25,
 #elif defined(M5STICKC)
-	#ifdef M5STICKC_AUDIO
-		2, // piezo speaker
-	#else
-		26,
-	#endif
+#ifdef M5STICKC_AUDIO
+    2, // piezo speaker
+#else
+    26,
+#endif
 #elif defined(FX25TNCR4)
-	#ifdef ENABLE_TCM3105
-		25, 21,
-	#else
-		25, 26,
-	#endif
-#elif defined(M5StampQRP)
-    26,25,
+#ifdef ENABLE_TCM3105
+	25, 21,
+#else
+	25, 26,
+#endif
+#elif defined (BK4802)
+	CONFIG_BK4802_AUDIOOUT,
 #else
     25, 26, 27, 14, 12, 13,
     //23, 22, 21, 19, 18, 5, 4, 15,	// noise away?
@@ -230,6 +230,7 @@ void IRAM_ATTR timer_isr(void *arg)
 			bp = buf;
 			cycle = RATE_FACTOR;
 		}
+
     }
 
     timer_interrupt++;
@@ -411,9 +412,16 @@ void mod_task(void *arg)
 				if (--mp->pttoff_timer == DAC_OFF_DELAY) { // ptt off timer expire
 
 #ifndef M5STICKC_AUDIO
+
+#ifdef BK4802
+					GPIO.func_out_sel_cfg[mp->gpio_pin].func_sel = SIG_GPIO_OUT_IDX; // disable DAC output
+					bk4802_ptt_isr(tp->bkp, 0); // PTT off, from ISR
+#else
 					// PTT off
 					gpio_set_level(tp->ptt_pin, 0);
 #endif
+
+#endif // M5STICKC_AUDIO
 
 #ifdef M5ATOM
 					// PTT LED off
@@ -427,11 +435,6 @@ void mod_task(void *arg)
 #ifdef FX25TNCR2
 					gpio_set_level(tp->sta_led_pin, 0); // STA LED off
 #endif
-
-#ifdef M5StampQRP
-//					trx_recv();
-#endif
-
 				} else if (mp->pttoff_timer == 0) { // DAC off timer expire
 
 					GPIO.func_out_sel_cfg[mp->gpio_pin].func_sel = SIG_GPIO_OUT_IDX; // disable DAC output

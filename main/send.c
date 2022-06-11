@@ -26,8 +26,8 @@
 #include "m5atom.h"
 #endif
 
-#ifdef M5StampQRP
-#include "bk4802p.h"
+#ifdef BK4802
+#include "bk4802.h"
 #endif
 
 static const char TAG[] = "send";
@@ -233,10 +233,6 @@ static void send_task(void *arg)
 
 	    	ESP_LOGD(TAG, "PTT is off, port = %d", tp->port);
 
-#ifdef M5StampQRP
-//			trx_send();
-#endif
-
 	    	while (!tp->fullDuplex) { // if half duplex
 
 	    		// check and wait for CDT off
@@ -261,8 +257,17 @@ static void send_task(void *arg)
 	    	// transmitter on
 
 #ifndef M5STICKC_AUDIO
+
+#ifdef BK4802
+			bk4802_set_tx(tp->bkp); // PTT on
+			//bk4802_ptt(tp->bkp, 1);
+			//vTaskDelay(30 / portTICK_PERIOD_MS); // wait for I2C
+#else
 	    	gpio_set_level(tp->ptt_pin, 1); // PTT on
 #endif
+
+#endif // M5STICKC_AUDIO
+
 #ifdef M5ATOM
 	    	m5atom_led_set_level(M5ATOM_LED_RED, 1); // PTT LED on
 #endif
