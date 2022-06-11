@@ -19,8 +19,7 @@
 
 #define BK4802_TEST 1
 
-//#define BK4802_I2C_FREQ 400000
-#define BK4802_I2C_FREQ 100000
+#define BK4802_I2C_FREQ 400000
 #define BK4802_I2C_TIMEOUT 10
 #define BK4802_I2C_ADDR 0x48
 #define BK4802_I2C_RETRY 3
@@ -36,9 +35,11 @@
 #ifdef CONFIG_BK4802_PA_POWER
 #define BK4802_TXPA_LEVEL CONFIG_BK4802_TX_POWER
 #else
-#define BK4802_TXPA_LEVEL 7 // Power level of TX PA, 0:-40dBm..7:12dBm
+#define BK4802_TXPA_LEVEL 0 // Power level of TX PA, 0:-40dBm..7:12dBm
 #endif
 #define BK4802_REG_RSSI 24
+#define BK4802_RSSI_SQL_LV 0x40
+#define BK4802_RSSI_SQL_EN 0
 #define BK4802_RX_VOL 15    // 0..15
 
 static const char *TAG = "bk4802";
@@ -63,17 +64,13 @@ static const uint16_t bk4802_rxreg[BK4802_REG_MAX] = {
     0x061f, // REG15
     0x9e3c, // REG16
     0x1f00, // REG17
-    0xd1d1,
-//    0xd1c0, // REG18
+    0xd1d1, // REG18
     0x2000  // REG19, RX Volume
         | (BK4802_RX_VOL),
     0x01ff, // REG20
     0xe000, // REG21
-//      0x1800,        // always open
-//      0x1840,        // default
-    0x1800,
-//  0x0040, // REG22
-//  0xacd0
+    0x1800  // REG22
+        | (BK4802_RSSI_SQL_LV & BK4802_RSSI_SQL_EN),
     0x18e0  // REG23, Power save off, ASK
         | (BK4802_ASK << 8),
 };
@@ -87,7 +84,6 @@ static const uint16_t bk4802_txreg[BK4802_REG_MAX] = {
     0x0004, // REG5
     0xf140, // REG6
     0xed00, // REG7
-//  0x17e0,
     0x1700  // REG8, TX PA level, ASK
         | (BK4802_TXPA_LEVEL << 5)
         | (BK4802_ASK << 4),
@@ -100,16 +96,14 @@ static const uint16_t bk4802_txreg[BK4802_REG_MAX] = {
     0x061f, // REG15
     0x9e3c, // REG16
     0x1f00, // REG17
-    0xc1c1,
-//  0xd1d1, // REG18
+    0xd1d1, // REG18
     0x200f, // REG19
     0x01ff, // REG20
     0xe000, // REG21
     0x0340, // REG22
-//  0x98e0  // REG23, MOD, PTT, ASK
     0x98e0  // REG23, MOD, PTT, ASK
-        | (1 << 10) // MOD on for BK4802P?
-        | (1 << 9)  // PTT on for BK4802P?
+        | (1 << 10) // MOD on for BK4802P
+        | (1 << 9)  // PTT on for BK4802P
         | (BK4802_ASK << 8),
 };
 
@@ -351,8 +345,7 @@ static void bk4802_rssi(bk4802_t *bkp)
 
     int rssi = bk4802_read(bkp->i2c_num, BK4802_REG_RSSI) & 0xff;
 
-//    if (rssi >= (bkp->rxreg[22] & 0xff)) {  // squelch open
-    if (rssi >= (0x40)) {  // squelch open
+    if (rssi >= (BK4802_RSSI_SQL_LV)) {  // squelch open
         if (!bkp->squelch) {
             xSemaphoreTake(bkp->cdt_sem, 0);
             bkp->squelch = true;
