@@ -38,7 +38,7 @@
 #define BK4802_TXPA_LEVEL 0 // Power level of TX PA, 0:-40dBm..7:12dBm
 #endif
 #define BK4802_REG_RSSI 24
-#define BK4802_RSSI_SQL_LV 0x40
+#define BK4802_RSSI_SQL_LV 0x48
 #define BK4802_RSSI_SQL_EN 0
 #define BK4802_RX_VOL 15    // 0..15
 
@@ -69,7 +69,8 @@ static const uint16_t bk4802_rxreg[BK4802_REG_MAX] = {
         | (BK4802_RX_VOL),
     0x01ff, // REG20
     0xe000, // REG21
-    0x1800  // REG22
+//    0x1800  // REG22
+    0x0000  // REG22
         | (BK4802_RSSI_SQL_LV & BK4802_RSSI_SQL_EN),
     0x18e0  // REG23, Power save off, ASK
         | (BK4802_ASK << 8),
