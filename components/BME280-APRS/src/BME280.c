@@ -19,6 +19,8 @@
 /* 2021.07.03      Digipeater        */
 /* 2021.07.09      treat NULL pointer*/
 
+#include "sdkconfig.h"
+
 #ifdef CONFIG_BME280_EXISTS
 
 #include <freertos/FreeRTOS.h>
@@ -164,11 +166,12 @@ void BME280_aprs_task(void *arg)
     press_act = (double)press_cal / 100.0;
     hum_act = (double)hum_cal / 1024.0;
 
+#ifdef DEBUG
     // for debug 2021.03.05
     printf("TEMP: %.2lfdegC  ", temp_act);
     printf("PRESS: %.2lfhPa  ", press_act);
     printf("HUM: %.2lf%%  ", hum_act);
-
+#endif
 
     i = j; /* add for Digipeater */
     i = i + sprintf((char *)ax25_data+i, "!%s/%s-", lat, lon); //ax25_data[] is not a string
@@ -176,8 +179,8 @@ void BME280_aprs_task(void *arg)
     i = i + sprintf((char *)ax25_data+i, "p:%.2lfhPa ", press_act);
     i = i + sprintf((char *)ax25_data+i, "h:%.2lf%% ", hum_act);
     i = i + sprintf((char *)ax25_data+i, "  FX.25");
-
     
+#if 0
     // for debug 2021.03.05
     int k = 0;
     for (k=0; k<i; k++) {
@@ -185,7 +188,7 @@ void BME280_aprs_task(void *arg)
     }
     printf(" i=%d", i);
     printf(" k=%d\n", k);
-
+#endif
 
     len = i+1;
 
@@ -358,4 +361,3 @@ unsigned long int calibration_H(signed long int adc_H)
 
 
 #endif
-
