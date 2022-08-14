@@ -282,7 +282,9 @@ void app_main(void)
 
 #ifdef CONFIG_BME280_EXISTS
     //  BME280 APRS transmit test
+#ifndef BK4802
     ESP_ERROR_CHECK(i2c_master_init()); /* I2C interface initialize */
+#endif
     BME280_setup(); /* BME280 setup */
     vTaskDelay(2 * 1000 / portTICK_PERIOD_MS); /* wait more than BME280 measurment period */
     xTaskCreate(BME280_aprs_task, "BME280_aprs_task_0", 1024 * 2, (void *)0, 10, NULL);
